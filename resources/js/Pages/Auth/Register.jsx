@@ -1,36 +1,48 @@
-import { useEffect } from 'react';
-import GuestLayout from '@/Layouts/GuestLayout';
-import InputError from '@/Components/InputError';
-import InputLabel from '@/Components/InputLabel';
-import PrimaryButton from '@/Components/PrimaryButton';
-import TextInput from '@/Components/TextInput';
-import { Head, Link, useForm } from '@inertiajs/react';
+import { useEffect, useState } from "react";
+import GuestLayout from "@/Layouts/GuestLayout";
+import InputError from "@/Components/Custom/InputError";
+import InputLabel from "@/Components/Custom/InputLabel";
+import PrimaryButton from "@/Components/Custom/PrimaryButton";
+import TextInput from "@/Components/Custom/TextInput";
+import { Head, Link, useForm } from "@inertiajs/react";
+import IconButton from "@/Components/Custom/IconButon";
+import { GoEye, GoEyeClosed } from "react-icons/go";
 
 export default function Register() {
     const { data, setData, post, processing, errors, reset } = useForm({
-        name: '',
-        email: '',
-        password: '',
-        password_confirmation: '',
+        name: "",
+        email: "",
+        password: "",
+        password_confirmation: "",
     });
 
     useEffect(() => {
         return () => {
-            reset('password', 'password_confirmation');
+            reset("password", "password_confirmation");
         };
     }, []);
 
     const submit = (e) => {
         e.preventDefault();
 
-        post(route('register'));
+        post(route("register"));
+    };
+
+    const [showPassword, setShowPassword] = useState(false);
+    const togglePasswordVisibility = () => {
+        setShowPassword(!showPassword);
+    };
+
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+    const toggleConfirmPasswordVisiblity = () => {
+        setShowConfirmPassword(!showConfirmPassword);
     };
 
     return (
         <GuestLayout>
             <Head title="Register" />
 
-            <form onSubmit={submit}>
+            <form onSubmit={submit} className="space-y-2 p-2 rounded-2xl">
                 <div>
                     <InputLabel htmlFor="name" value="Name" />
 
@@ -38,76 +50,109 @@ export default function Register() {
                         id="name"
                         name="name"
                         value={data.name}
-                        className="mt-1 block w-full"
+                        className="block w-full rounded-3xl py-3"
                         autoComplete="name"
                         isFocused={true}
-                        onChange={(e) => setData('name', e.target.value)}
+                        onChange={(e) => setData("name", e.target.value)}
                         required
                     />
 
                     <InputError message={errors.name} className="mt-2" />
                 </div>
 
-                <div className="mt-4">
-                    <InputLabel htmlFor="email" value="Email" />
+                <div className="">
+                    <InputLabel htmlFor="email" value="Email Address" />
 
                     <TextInput
                         id="email"
                         type="email"
                         name="email"
                         value={data.email}
-                        className="mt-1 block w-full"
+                        className="block w-full rounded-3xl py-3"
                         autoComplete="username"
-                        onChange={(e) => setData('email', e.target.value)}
+                        onChange={(e) => setData("email", e.target.value)}
                         required
                     />
 
-                    <InputError message={errors.email} className="mt-2" />
+                    <InputError message={errors.email} className="" />
                 </div>
 
-                <div className="mt-4">
+                <div className="">
                     <InputLabel htmlFor="password" value="Password" />
 
-                    <TextInput
-                        id="password"
-                        type="password"
-                        name="password"
-                        value={data.password}
-                        className="mt-1 block w-full"
-                        autoComplete="new-password"
-                        onChange={(e) => setData('password', e.target.value)}
-                        required
-                    />
+                    <div className="flex rounded-3xl border border-gray-300">
+                        <TextInput
+                            id="password"
+                            type={showPassword ? "text" : "password"}
+                            name="password"
+                            value={data.password}
+                            isFocused={false}
+                            className="block w-full rounded-3xl py-3 border-0"
+                            autoComplete="new-password"
+                            onChange={(e) =>
+                                setData("password", e.target.value)
+                            }
+                            required
+                        />
+                        <IconButton onClick={togglePasswordVisibility}>
+                            {showPassword ? (
+                                <GoEyeClosed size={20} />
+                            ) : (
+                                <GoEye size={20} />
+                            )}
+                        </IconButton>
+                    </div>
 
-                    <InputError message={errors.password} className="mt-2" />
+                    <InputError message={errors.password} className="" />
                 </div>
 
-                <div className="mt-4">
-                    <InputLabel htmlFor="password_confirmation" value="Confirm Password" />
-
-                    <TextInput
-                        id="password_confirmation"
-                        type="password"
-                        name="password_confirmation"
-                        value={data.password_confirmation}
-                        className="mt-1 block w-full"
-                        autoComplete="new-password"
-                        onChange={(e) => setData('password_confirmation', e.target.value)}
-                        required
+                <div className="">
+                    <InputLabel
+                        htmlFor="password_confirmation"
+                        value="Confirm Password"
                     />
-
-                    <InputError message={errors.password_confirmation} className="mt-2" />
+                    <div className="flex rounded-3xl border border-gray-300">
+                        <TextInput
+                            id="password_confirmation"
+                            type={showConfirmPassword ? "text" : "password"}
+                            name="password_confirmation"
+                            value={data.password_confirmation}
+                            isFocused={false}
+                            className="block w-full rounded-3xl py-3 border-0"
+                            autoComplete="new-password"
+                            onChange={(e) =>
+                                setData("password_confirmation", e.target.value)
+                            }
+                            required
+                        />
+                        <IconButton onClick={toggleConfirmPasswordVisiblity}>
+                            {showConfirmPassword ? (
+                                <GoEyeClosed size={20} />
+                            ) : (
+                                <GoEye size={20} />
+                            )}
+                        </IconButton>
+                    </div>
+                    <InputError
+                        message={errors.password_confirmation}
+                        className=""
+                    />
                 </div>
 
-                <div className="flex items-center justify-end mt-4">
+                <div className="flex items-center justify-end">
                     <Link
-                        href={route('login')}
-                        className="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                        href={route("login")}
+                        className="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 font-semibold"
                     >
-                        Already registered?
+                        Already have an account?
                     </Link>
+                </div>
 
-                    <PrimaryButton className="ms-4" disabled={processing}>
+                <div className="">
+                    <PrimaryButton
+                        className="w-full justify-center bg-gradient-to-b from-green-500 to-blue-700 rounded-3xl py-3"
+                        disabled={processing}
+                    >
                         Register
                     </PrimaryButton>
                 </div>
